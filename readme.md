@@ -1,7 +1,7 @@
 # 🔥 To-Do List Chrome Extension
 
 A minimal and productivity-focused Chrome Extension that lets you manage tasks, store shortcuts, and get daily Gen-Z motivational quotes to keep you grinding.
-
+![alt text](image.png)
 ## 🚀 Features
 
 - ✅ Add/Delete/Mark tasks as done
