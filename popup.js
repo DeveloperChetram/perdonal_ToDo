@@ -56,7 +56,7 @@ const renderTasks = () => {
   tasks.forEach((task, index) => {
     taskString += `
       <div class="task">
-        <p style="text-decoration: ${task.done ? 'line-through' : 'none'}; font-style: ${task.done ? 'italic' : 'normal'};  "><span style="width:.4rem; height:.4rem; border-radius:100px;${task.done ? "background-color:green" : "background-color:red"} ;"></span>  ${task.text}</p>
+        <p style="text-decoration: ${task.done ? 'line-through' : 'none'}; font-style: ${task.done ? 'italic' : 'normal'};  "><span style="width:.4rem; height:.4rem;flex-shrink: 0; border-radius:100px;${task.done ? "background-color:green" : "background-color:red"} ;"></span>  ${task.text}</p>
         <div class="btn-group">
           <button class="deleteBtn" data-index="${index}">Delete</button>
           <button class="doneBtn" data-index="${index}">${task.done ? "Undo" : "Done"}</button>
