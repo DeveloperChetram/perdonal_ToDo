@@ -251,3 +251,14 @@ padding:10px 5px 20px 5px ;
 .shortcut-input-div.active {
   display: flex;
 }
+
+.quote {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #a7a7a7;
+  border-left: 3px solid #ccc;
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+  line-height: 1.5;
+  font-family: "Georgia", serif;
+}
