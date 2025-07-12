@@ -82,25 +82,75 @@ function saveTasks() {
 const addtask = () => {
   addBtn.addEventListener('click', () => {
     const taskText = taskInput.value.trim();
-    if (taskText) {
-      tasks.push({ text: taskText, done: false });
-      taskInput.value = '';
-      saveTasks();
+    if (!taskText) {
+      triggerInputError();
+      return;
     }
+    tasks.push({ text: taskText, done: false });
+    taskInput.value = '';
+    saveTasks();
     renderTasks();
   })
 }
 window.addEventListener('keypress', (key) => {
   if (key.key == "Enter") {
     const taskText = taskInput.value.trim();
-    if (taskText) {
-      tasks.push({ text: taskText, done: false });
-      taskInput.value = '';
-      saveTasks();
+    if (!taskText) {
+      triggerInputError();
+      return;
     }
+    tasks.push({ text: taskText, done: false });
+    taskInput.value = '';
+    saveTasks();
     renderTasks();
   }
 })
+
+// Error effect: blink input border
+function triggerInputError() {
+  if (taskInput.classList.contains('input-error')) return;
+  taskInput.classList.add('input-error');
+  let blinkCount = 0;
+  let blink = true;
+  const originalPlaceholder = taskInput.placeholder;
+  const errorPlaceholder = 'Write something to add';
+  const interval = setInterval(() => {
+    if (blink) {
+      taskInput.style.borderBottom = '1px solid #cf0a0a';
+      taskInput.placeholder = errorPlaceholder;
+    } else {
+      taskInput.style.borderBottom = '1px solid #494949';
+      taskInput.placeholder = originalPlaceholder;
+    }
+    blink = !blink;
+    blinkCount++;
+    if (blinkCount >= 4) { // 2s, 4 blinks (500ms each)
+      clearInterval(interval);
+      taskInput.classList.remove('input-error');
+      taskInput.style.borderBottom = '1px solid #494949';
+      taskInput.placeholder = originalPlaceholder;
+    }
+  }, 500);
+
+  // Reset on user input
+  const resetOnInput = () => {
+    if (taskInput.classList.contains('input-error')) {
+      taskInput.classList.remove('input-error');
+      taskInput.style.borderBottom = '1px solid #494949';
+      taskInput.placeholder = originalPlaceholder;
+      clearInterval(interval);
+      taskInput.removeEventListener('input', resetOnInput);
+    }
+  };
+  taskInput.addEventListener('input', resetOnInput);
+}
+
+taskInput.addEventListener('input', () => {
+  if (taskInput.classList.contains('input-error')) {
+    taskInput.classList.remove('input-error');
+    taskInput.style.borderBottom = '1px solid #494949';
+  }
+});
 addtask();
 
 

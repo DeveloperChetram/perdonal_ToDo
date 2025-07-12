@@ -305,3 +305,150 @@ padding:10px 10px 20px 5px ;
   line-height: 1.5;
   font-family: "Georgia", serif;
 }
+
+// Error state for input placeholder
+.input-error::placeholder {
+  color: #cf0a0a !important;
+  opacity: 1;
+}
+
+// ----------------------
+// Responsive Media Queries
+// ----------------------
+
+// For tablets (max-width: 900px)
+@media (max-width: 900px) {
+  main {
+    min-width: 90%;
+  }
+  .todo-main-container {
+    max-width: 95vw;
+    min-width: 95vw !important;
+    padding: 8px;
+  }
+  .header .short-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .header .input-div input {
+    font-size: 1rem;
+  }
+  .taskList .task p {
+    font-size: 0.95rem;
+  }
+}
+
+// For mobile devices (max-width: 600px)
+@media (max-width: 600px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    padding: 0;
+  }
+  main {
+    min-width: 100vw;
+    width: 100vw;
+    padding: 0;
+  }
+  .todo-main-container {
+    max-width: 100vw;
+    min-width: 100vw !important;
+    padding: 4px;
+    gap: 6px;
+  }
+  .header {
+    gap: 6px;
+    padding-bottom: 6px;
+  }
+  .header .short-header {
+    gap: 6px;
+    padding: 0 2px;
+  }
+  .header .input-div {
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+  .header .input-div input {
+    font-size: 0.95rem;
+    width: 100%;
+    min-width: 0;
+  }
+  .header .input-div #addBtn {
+    width: 100%;
+    margin-top: 4px;
+  }
+  .shortcuts {
+    gap: 6px;
+    padding: 6px 2px 12px 2px;
+  }
+  .shortcuts div {
+    width: 32px;
+    height: 32px;
+  }
+  .taskList .task {
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 0;
+    align-items: stretch;
+  }
+  .taskList .task p {
+    font-size: 0.9rem;
+    margin-left: 0;
+  }
+  .taskList .task .btn-group {
+    gap: 6px;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .taskList .task .deleteBtn,
+  .taskList .task .doneBtn {
+    width: 48px;
+    height: 28px;
+    font-size: 0.9rem;
+    padding: 4px 6px;
+  }
+  .quote {
+    font-size: 0.85rem;
+    padding-left: 0.5rem;
+  }
+
+  /* Place Add button beside input on mobile */
+  .header .input-div {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+  .header .input-div input {
+    width: 0;
+    flex: 1 1 70%;
+    min-width: 0;
+  }
+  .header .input-div #addBtn {
+    width: auto;
+    margin-top: 0;
+    flex: 0 0 auto;
+  }
+
+  /* Task buttons (Delete, Done) at top right on mobile */
+  .taskList .task {
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+  }
+  .taskList .task .btn-group {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: auto;
+    gap: 10px; /* Increased gap for better spacing */
+    justify-content: flex-end;
+    flex-direction: row;
+    z-index: 2;
+  }
+  .taskList .task p {
+    margin-right: 90px; /* More space for buttons */
+    margin-top: 25px;   /* Add top margin to separate from buttons */
+    display: block;
+  }
+}
