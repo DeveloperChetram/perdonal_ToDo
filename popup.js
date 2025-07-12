@@ -9,16 +9,69 @@ const deleteBtn = document.querySelectorAll('.deleteBtn');
 const shortcutPlusBtn = document.querySelector('.shortcutPlusBtn');
 // const shortcutInputDiv = document.querySelector('.shortcut-input-div');
 const quote = document.querySelector('.quote');
-
-
+let user = true;
 let tasks = [];
 
+// resetUserStatus()
+function checkNewUser() {
+  const userStatus = localStorage.getItem('userStatus');
+  if (!userStatus) {
+    
+    user = true;
+    localStorage.setItem('userStatus', 'returning');
+    return true;
+  } else {
 
+    user = false;
+    return false;
+  }
+}
+
+
+
+
+function isWelcomeNote(taskText) {
+  return taskText.includes('📌 Welcome to Work ToDo');
+}
 
 function loadTasks() {
   const stored = localStorage.getItem('tasks');
+  const welcomeDismissed = localStorage.getItem('welcomeDismissed');
+  
   if (stored) {
     tasks = JSON.parse(stored);
+  } else if (checkNewUser() && !welcomeDismissed) {
+    
+    tasks = [
+      { text: `<div>
+  <span style="color: #e0e0e0; font-weight: bold;">📌 Welcome to <span style="color: #4ab580; font-weight: bold;">Work ToDo</span></span><br>
+
+  <span style="color: #e0e0e0;">• You can add tasks using the 
+    <span style="color: #4ab580; font-weight: bold;">"Add Task"</span> button.</span><br>
+
+  <span style="color: #e0e0e0;">• You will receive a 
+    <span style="color: #4ab580; font-weight: bold;">quote</span> whenever the page reloads.</span><br>
+
+  <span style="color: #e0e0e0;">• You can even add 
+    <span style="color: #4ab580; font-weight: bold;">HTML content</span> (with inline CSS).</span><br>
+
+  <span style="color: #e0e0e0;">• Your tasks are saved in 
+    <span style="color: #4ab580; font-weight: bold;">LocalStorage</span>.</span><br>
+
+  <span style="color: #e0e0e0;">• 
+    <span style="color: #4ab580; font-weight: bold;">Deleted tasks</span> are permanently removed.</span><br>
+
+  <span style="color: #e0e0e0;">• 
+    <span style="color: #4ab580; font-weight: bold;">Edit option</span> is not available yet.</span><br>
+
+  <span style="color: #e0e0e0;">• 
+    <span style="color: #4ab580; font-weight: bold;">Thanks for reaching out!</span> 😊</span>
+</div>
+
+
+    `,
+     done: false }
+    ];
   }
 }
 
@@ -52,11 +105,11 @@ addtask();
 
 
 const renderTasks = () => {
-  let taskString = '';
+  let taskString = ``;
   tasks.forEach((task, index) => {
     taskString += `
       <div class="task">
-        <p style="text-decoration: ${task.done ? 'line-through' : 'none'}; font-style: ${task.done ? 'italic' : 'normal'};  "><span style="width:.4rem; height:.4rem;flex-shrink: 0; border-radius:100px;${task.done ? "background-color:green" : "background-color:red"} ;"></span>  ${task.text}</p>
+        <p style="text-decoration: ${task.done ? 'line-through' : 'none'}; opacity: ${task.done ? '0.7' : '1'};  font-style: ${task.done ? 'italic' : 'normal'};  "><span style="width:.4rem; height:.4rem;flex-shrink: 0; border-radius:100px;${task.done ? "background-color:green" : "background-color:red"} ;"></span>  ${task.text}</p>
         <div class="btn-group">
           <button class="deleteBtn" data-index="${index}">Delete</button>
           <button class="doneBtn" data-index="${index}">${task.done ? "Undo" : "Done"}</button>
@@ -71,6 +124,14 @@ const renderTasks = () => {
   deleteBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const index = e.target.dataset.index;
+      
+      // Check if user is deleting the welcome note
+      if (isWelcomeNote(tasks[index].text)) {
+        // Mark that user has seen and dismissed the welcome note
+        localStorage.setItem('userStatus', 'returning');
+        localStorage.setItem('welcomeDismissed', 'true');
+      }
+      
       tasks.splice(index, 1);
       saveTasks();
       renderTasks();
@@ -128,7 +189,7 @@ let shortcutList = [
 ];
 let shortcutString = ``;
 shortcutList.forEach((item) => {
-  shortcutString += `<a href="${item.link}" target="_blank"> <div> <img src="/assets/${item.icon}" alt="${item.name}"> </div></a>`
+  shortcutString += `<a  class="shortcut-link" href="${item.link}" target="_blank"> <div> <img src="/assets/${item.icon}" alt="${item.name}"> </div></a>`
 
 })
 shortcuts.innerHTML = shortcutString + shortcuts.innerHTML;
@@ -238,7 +299,107 @@ const genZQuotes = [
   "Nobody’s coming. Be your own hero.",
   "More pain, more power.",
   "Doubt dies in motion.",
-  "Stay broke if you stay lazy."
+  "Stay broke if you stay lazy.",
+    "Quit talking. Start executing now.",
+  "No talent? Outwork everyone anyway.",
+  "Cry later. Grind now.",
+  "Results require work. Not wishes.",
+  "Weak effort. Weak life.",
+  "Pressure builds beasts.",
+  "Losers wait. Winners act.",
+  "Broke is loud. Rich is silent.",
+  "Time’s ticking. You scrolling?",
+  "Stop dreaming. Start building.",
+  "Average mindset. Average results.",
+  "Go broke trying.",
+  "Be obsessed. Not interested.",
+  "Lazy days kill dreams.",
+  "Do more. Want less.",
+  "Only actions earn respect.",
+  "Be better. Not bitter.",
+  "Broke hustle = Broke outcome.",
+  "Mindset decides your money.",
+  "Work hurts. So does regret.",
+  "Chase skills. Not trends.",
+  "Create more. Complain less.",
+  "No pain? No power.",
+  "Outwork the excuses.",
+  "Win without applause.",
+  "They chilling. You grinding.",
+  "Hustle beats hype.",
+  "Zero excuses. Infinite effort.",
+  "Bosses bleed silently.",
+  "Be cold. Get gold.",
+  "Work doesn’t lie.",
+  "Get tired. Not soft.",
+  "Starve comfort. Feed effort.",
+  "Pain is progress.",
+  "No cap. Just grind.",
+  "Get better. Stay dangerous.",
+  "Earn it. Every day.",
+  "Choose work. Every damn time.",
+  "Build or stay broke.",
+  "Be valuable. Not visible.",
+  "Don't flex. Just conquer.",
+  "No room for weakness.",
+  "Pray less. Push more.",
+  "Action speaks. Results scream.",
+  "Struggle now. Dominate later.",
+  "No grind? No gold.",
+  "Earn your sleep.",
+  "Dreams demand hustle.",
+  "Grit over gimmicks.",
+  "Commit hard. Or quit.",
+  "Comfort is your enemy.",
+  "You slacking? They snapping.",
+  "Get serious. Or get silent.",
+  "Grind till they google you.",
+  "Weak minds seek validation.",
+  "Don’t settle. Ever.",
+  "Rise hard. Stay sharp.",
+  "Demand more from yourself.",
+  "Clock in. Shut up.",
+  "Chase the goal.",
+  "Your mood means nothing.",
+  "Built different? Prove it.",
+  "Soft hustle. Soft life.",
+  "Stop wishing. Start working.",
+  "You earn what you chase.",
+  "Fear success? Stay broke.",
+  "Outwork your potential.",
+  "Drown noise. Chase greatness.",
+  "Mindset makes millions.",
+  "No pain? No push.",
+  "You owe yourself effort.",
+  "Make moves. Not noise.",
+  "Excuses don’t build empires.",
+  "Lazy today. Broke tomorrow.",
+  "Outlast. Outgrind. Outwin.",
+  "Don’t pause. Push harder.",
+  "They watching. You working?",
+  "Enough talking. Show discipline.",
+  "Be raw. Stay real.",
+  "Silence the weakness.",
+  "Play time’s over.",
+  "No limits. No mercy.",
+  "Earn the peace.",
+  "Break comfort. Embrace pressure.",
+  "Comfort won’t feed you.",
+  "Discipline delivers dreams.",
+  "Sleep later. Build now.",
+  "Master pain. Own results.",
+  "Do more. Talk none.",
+  "Loud grind. Quiet wins.",
+  "Chase pressure. Not praise.",
+  "Be feared. Not forgotten.",
+  "They chill. You charge.",
+  "Respect the hustle.",
+  "Weak days? Work anyway.",
+  "Don’t stop. Dominate.",
+  "Doubt dies with discipline.",
+  "You deserve what you do.",
+  "Succeed alone. Applaud later.",
+  "Burn excuses. Light goals."
 ];
 
 const getQuote = ()=>{
