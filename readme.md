@@ -21,7 +21,7 @@ A minimal and productivity-focused ToDo that lets you manage tasks, store shortc
 
 ## 🛠️ You can add HTML divs with inline css:-
 
-example code-
+Example code-
 
 ```html
  <div style="color: #4ab580; font-weight: 600; font-size: 1.1rem; padding: 12px 20px; background: rgba(255,255,255,0.05); border-left: 4px solid #4ab580; margin: 15px 0; animation: slideFade 1s ease-out forwards; opacity: 0;">
@@ -37,11 +37,9 @@ example code-
 ```
 
 
-1. Clone this repository or download the ZIP.
-2. Go to `chrome://extensions/`
-3. Enable **Developer mode**
-4. Click on **Load unpacked**
-5. Select the folder containing this extension
+Simply  copy this code and insert in input :-
+
+![alt text](image-1.png)
 
 ## 📋 Usage
 
