@@ -216,21 +216,22 @@ document.addEventListener("DOMContentLoaded", function () {
   addtask();
 
   const renderTasks = () => {
-    let taskString = `<div class="task" ">
-  <span style="position: absolute; top: 0.5rem; left: 0.5rem; font-size: 0.7rem; color: gray;">
+    let taskString = `
+//     <div class="task" ">
+//   <span style="position: absolute; top: 0.5rem; left: 0.5rem; font-size: 0.7rem; color: gray;">
 
-  </span>
+//   </span>
   
-  <p style="text-decoration: none; opacity: 1; font-style: normal; margin-top: 1.2rem;">
-    <span style="width: .4rem; height: .4rem; flex-shrink: 0; border-radius: 100px; background-color: red; display: inline-block; margin-right: 0.5rem;"></span>
-    Complete homework
-  </p>
+//   <p style="text-decoration: none; opacity: 1; font-style: normal; margin-top: 1.2rem;">
+//     <span style="width: .4rem; height: .4rem; flex-shrink: 0; border-radius: 100px; background-color: red; display: inline-block; margin-right: 0.5rem;"></span>
+//     Complete homework
+//   </p>
   
-  <div class="btn-group">
-    <button class="deleteBtn">Delete</button>
-    <button class="doneBtn">Done</button>
-  </div>
-</div>
+//   <div class="btn-group">
+//     <button class="deleteBtn">Delete</button>
+//     <button class="doneBtn">Done</button>
+//   </div>
+// </div>
 
 `;
     tasks.forEach((task, index) => {
