@@ -4,7 +4,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -48,10 +49,13 @@ main .todo-main-container .header {
 }
 main .todo-main-container .header .short-header {
   width: 100%;
-  align-items: center;
   display: flex;
   gap: 10px;
   flex-direction: column;
+}
+main .todo-main-container .header .short-header .header-title {
+  display: flex;
+  justify-content: space-between;
 }
 main .todo-main-container .header .short-header .shortcuts {
   display: flex;
@@ -223,26 +227,29 @@ main .todo-main-container .taskList .task p {
   overflow-wrap: break-word;
   max-width: 100%;
 }
-main .todo-main-container .taskList .task .deleteBtn, main .todo-main-container .taskList .task .doneBtn {
+main .todo-main-container .taskList .task .deleteBtn,
+main .todo-main-container .taskList .task .doneBtn {
   width: 60px;
   height: 30px;
   padding: 5px 10px;
-  background-color: #494949;
-  color: #fcfcfc;
-  border: none;
   cursor: pointer;
   transition: all 0.2s ease;
 }
-main .todo-main-container .taskList .task .deleteBtn:hover, main .todo-main-container .taskList .task .doneBtn:hover {
-  background-color: #e0e0e0;
-  color: #181818;
-}
 main .todo-main-container .taskList .task .deleteBtn {
-  background-color: #631717;
+  border: 1px solid #f85149;
+  background-color: #3c0d0d;
+  color: #f85149;
 }
 main .todo-main-container .taskList .task .deleteBtn:hover {
   background-color: #cf0a0a;
   color: #fefefe;
+}
+main .todo-main-container .taskList .task .doneBtn {
+  background-color: #a0a0a0;
+  border: 1px solid white;
+}
+main .todo-main-container .taskList .task .doneBtn:hover {
+  opacity: 0.7;
 }
 
 .shortcut-input-div.active {
@@ -379,25 +386,63 @@ main .todo-main-container .taskList .task .deleteBtn:hover {
     margin-top: 0;
     flex: 0 0 auto;
   }
-  /* Task buttons (Delete, Done) at top right on mobile */
+  /* Task content and buttons side by side on mobile */
   .taskList .task {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
     position: relative;
+    justify-content: space-between;
+    padding: 12px 8px;
   }
   .taskList .task .btn-group {
-    position: absolute;
-    top: 8px;
-    right: 8px;
     width: auto;
-    gap: 10px; /* Increased gap for better spacing */
+    gap: 8px;
     justify-content: flex-end;
     flex-direction: row;
-    z-index: 2;
+    flex-shrink: 0;
   }
   .taskList .task p {
-    margin-right: 90px; /* More space for buttons */
-    margin-top: 25px; /* Add top margin to separate from buttons */
-    display: block;
+    margin: 0;
+    flex: 1;
+    padding-right: 10px;
+    font-size: 0.9rem;
   }
+  .confirm-dialog {
+    top: -6px !important;
+    left: 0px !important;
+  }
+}
+.confirm-dialog {
+  background: rgba(197, 197, 197, 0.185);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border: 1px solid #868686;
+  padding: 0.5rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-dialog button {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  margin: 0.2rem 0;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #f2f2f2;
+  transition: background-color 0.2s ease;
+}
+
+.confirm-dialog .confirm-delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.confirm-dialog .cancel-delete {
+  background-color: #bdc3c7;
+  color: #333;
+}
+
+.confirm-dialog button:hover {
+  opacity: 0.85;
 }/*# sourceMappingURL=style.css.map */

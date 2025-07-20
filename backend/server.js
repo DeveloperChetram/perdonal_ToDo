@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config();
-const router = require('./src/routes/todo.routes')
+const router = require('./src/routes/todo.route')
+const GeminiRouter = require('./src/routes/gemini.route');
 const connectToDB = require('./src/db/db')
 const cors = require('cors')
 
@@ -18,6 +19,7 @@ app.get('/',(req,res)=>{
     })
 })
 app.use('/',router)
+app.use('/', GeminiRouter);
 
 app.listen(3000,()=>{
     console.log('server is running at port 3000')

@@ -11,6 +11,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const shortcutPlusBtn = document.querySelector(".shortcutPlusBtn");
   // const shortcutInputDiv = document.querySelector('.shortcut-input-div');
   const quote = document.querySelector(".quote");
+   
+  // Add live time to .time-div
+  const timeDiv = document.querySelector('.time-div');
+  function updateTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const seconds = now.getSeconds().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const displayHour = (hours % 12 || 12).toString().padStart(2, "0");
+    timeDiv.textContent = `${displayHour}:${minutes}:${seconds} ${ampm}`;
+  }
+  if (timeDiv) {
+    updateTime();
+    setInterval(updateTime, 1000);
+  }
+
   // let user = true;
   let tasks = [];
   let taskObject = {
@@ -51,6 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     tasks.push({ ...taskObject, alert: mongoErr });
+      addBtn.innerText = "Add"
+      addBtn.disabled = false;
   };
 
   // resetUserStatus()
@@ -230,59 +249,82 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
   addtask();
-
-  const renderTasks = () => {
-    let taskString = ``;
-    tasks.forEach((task, index) => {
-      taskString += `
+const renderTasks = () => {
+  let taskString = ``;
+  tasks.forEach((task, index) => {
+    taskString += `
       <div class="task">
         <span style="position: absolute; top: .4rem; left: 0.5rem; font-size: 0.7rem; color: gray;">
-       ${task.date}
-  </span>
-  
-  ${task.alert ? ' <span style="position: absolute; top: .4rem; right: 0.5rem; font-size: 0.7rem; color: red; font-style:italic;">Not saved in database</span>' : ' '
-        }
+          ${task.date}
+        </span>
 
-        <p style="text-decoration: ${task.done ? "line-through" : "none"
-        }; opacity: ${task.done ? "0.7" : "1"};  font-style: ${task.done ? "italic" : "normal"
-        };  "><span style="width:.4rem; height:.4rem;flex-shrink: 0; border-radius:100px;${task.done ? "background-color:green" : "background-color:red"
-        } ;"></span>  ${task.text}</p>
-        <div class="btn-group">
-          <button class="deleteBtn" data-index="${index}">Delete</button>
-          <button class="doneBtn" data-index="${index}">${task.done ? "Undo" : "Done"
-        }</button>
+        ${task.alert ? '<span style="position: absolute; top: .4rem; right: 0.5rem; font-size: 0.7rem; color: #e74c3c; font-style:italic;">Not saved in database</span>' : ''}
+
+        <p style="text-decoration: ${task.done ? "line-through" : "none"}; opacity: ${task.done ? "0.7" : "1"}; font-style: ${task.done ? "italic" : "normal"};">
+          <span style="width:.4rem; height:.4rem; flex-shrink: 0; border-radius:100px; ${task.done ? "background-color:green" : "background-color:red"};"></span> 
+          ${task.text}
+        </p>
+
+        <div class="btn-group" style="position: relative;">
+          <!-- Confirmation Dialog (initially hidden) -->
+          <div class="confirm-dialog" style="display: none; gap:5px; position: absolute; right: 0px; top: 0;">
+            <button class="confirm-delete" data-index="${index}">Delete</button>
+            <button class="cancel-delete">Cancel</button>
+          </div>
+
+          <!-- Action Buttons -->
+          <button class="deleteBtn" data-index="${index}"  >Delete</button>
+          <button class="doneBtn" style='${task.done?'background-color: #0e4429;color:#56d364;border: 1px solid #238636;': ' '}'  data-index="${index}">${task.done ? "Undo" : "Done"}</button>
         </div>
-      </div>`;
+      </div>
+    `;
+  });
+
+  taskList.innerHTML = taskString;
+
+
+  document.querySelectorAll(".doneBtn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const index = e.target.dataset.index;
+      tasks[index].done = !tasks[index].done;
+      saveTasks();
+      renderTasks();
     });
-    taskList.innerHTML = taskString;
+  });
 
-    const deleteBtns = document.querySelectorAll(".deleteBtn");
-    const doneBtns = document.querySelectorAll(".doneBtn");
-
-    deleteBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const index = e.target.dataset.index;
-
-        if (isWelcomeNote(tasks[index].text)) {
-          localStorage.setItem("userStatus", "returning");
-          localStorage.setItem("welcomeDismissed", "true");
-        }
-
-        tasks.splice(index, 1);
-        saveTasks();
-        renderTasks();
-      });
+ 
+  document.querySelectorAll(".deleteBtn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const dialog = e.target.closest(".btn-group").querySelector(".confirm-dialog");
+      dialog.style.display = "flex";
     });
+  });
 
-    doneBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const index = e.target.dataset.index;
-        tasks[index].done = !tasks[index].done;
-        saveTasks();
-        renderTasks();
-      });
+
+  document.querySelectorAll(".cancel-delete").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const dialog = e.target.closest(".confirm-dialog");
+      dialog.style.display = "none";
     });
-  };
+  });
+
+
+  document.querySelectorAll(".confirm-delete").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const index = btn.dataset.index;
+
+      if (isWelcomeNote(tasks[index].text)) {
+        localStorage.setItem("userStatus", "returning");
+        localStorage.setItem("welcomeDismissed", "true");
+      }
+
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
+    });
+  });
+};
+
 
   let shortcutList = [
     {
@@ -538,6 +580,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const index = Math.floor(Math.random() * 100);
     quote.innerHTML = genZQuotes[index];
   };
+
+
+
+
+
   getQuote();
   loadTasks();
   renderTasks();
