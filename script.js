@@ -1,3 +1,5 @@
+import axios from 'https://cdn.jsdelivr.net/npm/axios@1.6.8/+esm';
+
 document.addEventListener("DOMContentLoaded", function () {
   const taskInput = document.getElementById("taskInput");
   const addBtn = document.getElementById("addBtn");
@@ -9,8 +11,47 @@ document.addEventListener("DOMContentLoaded", function () {
   const shortcutPlusBtn = document.querySelector(".shortcutPlusBtn");
   // const shortcutInputDiv = document.querySelector('.shortcut-input-div');
   const quote = document.querySelector(".quote");
-  let user = true;
+  // let user = true;
   let tasks = [];
+  let taskObject = {
+    text: null,
+    done: null,
+    date: null
+  }
+  let addAndSaveToDB = async (taskText) => {
+    const date = new Date();
+
+    const months = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    let taskObject = {
+      text: taskText,
+      done: false,
+      date: `${date.getDate() <= 9 ? "0" + date.getDate() : date.getDate()
+        } ${months[date.getMonth()]} ${date.getFullYear()}, ${(date.getHours() % 12 || 12).toString().padStart(2, "0")
+        }:${date.getMinutes().toString().padStart(2, "0")
+        }:${date.getSeconds().toString().padStart(2, "0")
+        } ${date.getHours() >= 12 ? "PM" : "AM"}`
+    };
+
+    let mongoErr = false;
+
+    try {
+      addBtn.disabled = true;
+      addBtn.innerText = "Adding"
+      await axios.post('http://localhost:3000/todo', taskObject);
+      addBtn.disabled = false;
+      addBtn.innerText = "Add"
+      // console.log(response);
+    } catch (err) {
+      console.error(err);
+      mongoErr = true;
+    }
+
+    tasks.push({ ...taskObject, alert: mongoErr });
+  };
 
   // resetUserStatus()
   function checkNewUser() {
@@ -77,90 +118,65 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const addtask = () => {
-    addBtn.addEventListener("click", () => {
+    addBtn.addEventListener("click", async () => {
       const taskText = taskInput.value.trim();
       if (!taskText) {
         triggerInputError();
         return;
       }
-      const date = new Date();
 
-      const months = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-      tasks.push({
-        text: taskText,
-        done: false,
-        date: ` ${
-          date.getDate() <= 9 ? "0" + date.getDate() : date.getDate()
-        } ${months[date.getMonth()]} ${date.getFullYear()}, ${(
-          date.getHours() % 12 || 12
-        )
-          .toString()
-          .padStart(2, "0")}:${date
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")} ${
-          date.getHours() >= 12 ? "PM" : "AM"
-        }`,
-      });
+      // await fetch("http://localhost:3000/todo",{
+      //   method:"POST",
+      //   headers:{
+      //     "Content-Type":"application/json"
+      //   },
+      //   body:JSON.stringify({
+      //     text: taskText,
+      //     done: false,
+      //     date: ` ${
+      //       date.getDate() <= 9 ? "0" + date.getDate() : date.getDate()
+      //     } ${months[date.getMonth()]} ${date.getFullYear()}, ${(
+      //       date.getHours() % 12 || 12
+      //     )
+      //       .toString()
+      //       .padStart(2, "0")}:${date
+      //       .getMinutes()
+      //       .toString()
+      //       .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")} ${
+      //       date.getHours() >= 12 ? "PM" : "AM"
+      //     }`,
+      //   })
+      // })
+      // .then((response)=>{
+      //   if (!response.ok) {
+      //     throw new Error(`HTTP error! status: ${response.status}`);
+      //   }
+      //   return response.json()
+      // })
+      // .then((data)=>{
+      //   console.log('data from fetch',data)
+      // })
+      // .catch((err)=>{
+      //   console.log(err)
+      // })
+
+      // console.log(tasks)
+      await addAndSaveToDB(taskText);
+
+
       taskInput.value = "";
       saveTasks();
       renderTasks();
     });
   };
-  // console.log(date.getHours());
-
-  window.addEventListener("keypress", (key) => {
+  window.addEventListener("keypress", async (key) => {
     if (key.key == "Enter") {
       const taskText = taskInput.value.trim();
       if (!taskText) {
         triggerInputError();
         return;
       }
-      const date = new Date();
-
-      const months = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-      tasks.push({
-        text: taskText,
-        done: false,
-        date: ` ${
-          date.getDate() <= 9 ? "0" + date.getDate() : date.getDate()
-        } ${months[date.getMonth()]} ${date.getFullYear()}, ${(
-          date.getHours() % 12 || 12
-        )
-          .toString()
-          .padStart(2, "0")}:${date
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")} ${
-          date.getHours() >= 12 ? "PM" : "AM"
-        }`,
-      });
+      await addAndSaveToDB(taskText);
       taskInput.value = "";
       saveTasks();
       renderTasks();
@@ -223,18 +239,18 @@ document.addEventListener("DOMContentLoaded", function () {
         <span style="position: absolute; top: .4rem; left: 0.5rem; font-size: 0.7rem; color: gray;">
        ${task.date}
   </span>
-        <p style="text-decoration: ${
-          task.done ? "line-through" : "none"
-        }; opacity: ${task.done ? "0.7" : "1"};  font-style: ${
-        task.done ? "italic" : "normal"
-      };  "><span style="width:.4rem; height:.4rem;flex-shrink: 0; border-radius:100px;${
-        task.done ? "background-color:green" : "background-color:red"
-      } ;"></span>  ${task.text}</p>
+  
+  ${task.alert ? ' <span style="position: absolute; top: .4rem; right: 0.5rem; font-size: 0.7rem; color: red; font-style:italic;">Not saved in database</span>' : ' '
+        }
+
+        <p style="text-decoration: ${task.done ? "line-through" : "none"
+        }; opacity: ${task.done ? "0.7" : "1"};  font-style: ${task.done ? "italic" : "normal"
+        };  "><span style="width:.4rem; height:.4rem;flex-shrink: 0; border-radius:100px;${task.done ? "background-color:green" : "background-color:red"
+        } ;"></span>  ${task.text}</p>
         <div class="btn-group">
           <button class="deleteBtn" data-index="${index}">Delete</button>
-          <button class="doneBtn" data-index="${index}">${
-        task.done ? "Undo" : "Done"
-      }</button>
+          <button class="doneBtn" data-index="${index}">${task.done ? "Undo" : "Done"
+        }</button>
         </div>
       </div>`;
     });
